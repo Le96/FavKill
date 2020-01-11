@@ -9,11 +9,14 @@ from env.credentials import ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET, \
                             CONSUMER_KEY, CONSUMER_SECRET
 
 
+LOGFILE_PATH = './env/logfile'
+
+
 def limit_handled(cursor: tweepy.Cursor) -> [tweepy.Status]:
     while True:
         try:
             yield cursor.next()
-        except (tweepy.error.TweepError):
+        except tweepy.error.TweepError:
             print('[!]', 'Rate Limit Found. Waiting...')
             time.sleep(60)
 
@@ -31,15 +34,16 @@ def main() -> None:
     auth.set_access_token(ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET)
 
     # api handler
-    api = tweepy.API(auth, wait_on_rate_limit=True,
+    api = tweepy.API(auth,
+                     wait_on_rate_limit=True,
                      wait_on_rate_limit_notify=True)
 
     # read current progress
-    with open('logfile', 'r') as log_fp:
-        log = sorted(list(map(int, log_fp.read().strip().split('\n'))))
-        current = log[0]
+    # with open(LOGFILE_PATH, 'r') as log_fp:
+    #     log = sorted(list(map(int, log_fp.read().strip().split('\n'))))
+    #     current = log[0]
 
-    test(api, current)
+    # test(api, current)
 
     # do
     for status in tweepy.Cursor(api.favorites, id='_Le96_').items():
@@ -62,7 +66,7 @@ def main() -> None:
         print('[+]', 'delete:', status.id, status.text)
 
         # save
-        with open('logfile', 'a') as log_fp:
+        with open(LOGFILE_PATH, 'a') as log_fp:
             log_fp.write(status.id_str + '\n')
 
         # delete

@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
 
+from env.credentials import ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET, \
+                            CONSUMER_KEY, CONSUMER_SECRET
+
 import tweepy
-from env.access_token import ACCESS_TOKEN
-from env.consumer import CONSUMER_KEY, CONSUMER_SECRET
+import twitter
 
 
 LOGFILE_PATH = './env/logfile'
-USER = '_Le96_'
 
 
 def test(api) -> None:
@@ -16,24 +17,22 @@ def test(api) -> None:
         log = sorted(list(map(int, log_fp.read().strip().split('\n'))))
         current = log[0]
     print('oldest:', current)
-    result = api.favorites(screen_name=USER, count=200)  # , max_id=current)
+    result = api.GetFavorites(screen_name='_Le96_', count=200, max_id=current)
     print(result)
     print('# of result:', len(result))
 
 
 def main() -> None:
-    # authentication credentials
-    auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
-    auth.set_access_token(ACCESS_TOKEN[USER]['KEY'],
-                          ACCESS_TOKEN[USER]['SECRET'])
-
     # api handler
-    api = tweepy.API(auth,
-                     wait_on_rate_limit=True,
-                     wait_on_rate_limit_notify=True)
+    api = twitter.Api(consumer_key=CONSUMER_KEY,
+                      consumer_secret=CONSUMER_SECRET,
+                      access_token_key=ACCESS_TOKEN_KEY,
+                      access_token_secret=ACCESS_TOKEN_SECRET,
+                      sleep_on_rate_limit=True)
+    assert api
 
-    # test(api)
-    # return
+    test(api)
+    return
 
     # do
     for status in tweepy.Cursor(api.favorites, id='_Le96_').items():

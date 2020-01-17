@@ -56,8 +56,6 @@ def main(start_pointer: int) -> None:
                 else:
                     print('Protected Tweet.')
                 index += 1
-            elif 'No status found' in reason:
-                index += 1
             elif 'might be automated' in reason or '429' in reason:
                 if 'might be automated' in reason:
                     print('Tool Filter Detected.')

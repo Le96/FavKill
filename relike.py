@@ -46,11 +46,17 @@ def main(start_pointer: int) -> None:
             index += 1
         except tweepy.error.TweepError as te:
             reason = te.reason
-            if 'You have already' in reason:
-                print('Already Liked.')
+            if 'You have already' in reason or \
+                    'No status found' in reason or \
+                    'protected users' in reason:
+                if 'You have already' in reason:
+                    print('Already Liked.')
+                elif 'No status found' in reason:
+                    print('Not Found.')
+                else:
+                    print('Protected Tweet.')
                 index += 1
             elif 'No status found' in reason:
-                print('Not Found.')
                 index += 1
             elif 'might be automated' in reason or '429' in reason:
                 if 'might be automated' in reason:

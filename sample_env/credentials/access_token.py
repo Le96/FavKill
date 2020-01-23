@@ -1,1 +1,6 @@
-ACCESS_TOKEN = {}
+ACCESS_TOKEN = {
+    'sampleuser': {
+        'KEY': 'AddHere',
+        'SECRET': 'AddHere',
+    },
+}

@@ -34,7 +34,7 @@ def main(start_pointer: int) -> None:
                           open(LOGFILE_PATH, 'r').readlines()))
 
     index = start_pointer
-    while index < len(liked_list) + 1:
+    while index < len(liked_list):
         try:
             print('[-]', 'try:', '#{:04d},'.format(index), liked_list[index],
                   end=' ')

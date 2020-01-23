@@ -1,0 +1,2 @@
+CONSUMER_KEY = 'AddHere'
+CONSUMER_SECRET = 'AddHere'

@@ -4,8 +4,8 @@
 import time
 
 import tweepy
-from env.access_token import ACCESS_TOKEN
-from env.consumer import CONSUMER_KEY, CONSUMER_SECRET
+from env.credentials.access_token import ACCESS_TOKEN
+from env.credentials.consumer import CONSUMER_KEY, CONSUMER_SECRET
 
 
 LOGFILE_PATH = './env/logfile'

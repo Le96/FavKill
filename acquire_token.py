@@ -9,11 +9,11 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 import autopep8
 import tweepy
 
-from env.consumer import CONSUMER_KEY, CONSUMER_SECRET
+from env.credentials.consumer import CONSUMER_KEY, CONSUMER_SECRET
 
 
 ENV_PATH = './env'
-ACCESS_TOKEN_FILE = ENV_PATH + '/access_token.py'
+ACCESS_TOKEN_FILE = ENV_PATH + '/credentials/access_token.py'
 
 
 def main() -> None:
@@ -62,7 +62,7 @@ class Handler(BaseHTTPRequestHandler):
         # Persistence Them
         os.makedirs(ENV_PATH, exist_ok=True)
         if os.path.isfile(ACCESS_TOKEN_FILE):
-            from env.access_token import ACCESS_TOKEN
+            from env.credentials.access_token import ACCESS_TOKEN
             new_access_token = ACCESS_TOKEN
         else:
             new_access_token = {}

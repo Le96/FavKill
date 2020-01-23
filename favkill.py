@@ -1,24 +1,27 @@
 #!/usr/bin/env python3
 
 
+import time
+
 import tweepy
-from env.access_token import ACCESS_TOKEN
-from env.consumer import CONSUMER_KEY, CONSUMER_SECRET
+from env.credentials.access_token import ACCESS_TOKEN
+from env.credentials.consumer import CONSUMER_KEY, CONSUMER_SECRET
 
 
 LOGFILE_PATH = './env/logfile'
+NSFW_TUPLE = ('🔞', 'nsfw')
 USER = '_Le96_'
 
 
-def test(api) -> None:
-    # read current progress
-    with open(LOGFILE_PATH, 'r') as log_fp:
-        log = sorted(list(map(int, log_fp.read().strip().split('\n'))))
-        current = log[0]
-    print('oldest:', current)
-    result = api.favorites(screen_name=USER, count=200)  # , max_id=current)
-    print(result)
-    print('# of result:', len(result))
+def delete_status(api: tweepy.API, status_id: int,
+                  logging: bool = True) -> None:
+    if logging:
+        with open(LOGFILE_PATH, 'a') as log_fp:
+            log_fp.write(str(status_id) + '\n')
+
+    # delete
+    api.destroy_favorite(status_id)
+    print('[i]\t\t', 'Successfully Deleted.')
 
 
 def main() -> None:
@@ -32,35 +35,54 @@ def main() -> None:
                      wait_on_rate_limit=True,
                      wait_on_rate_limit_notify=True)
 
-    # test(api)
-    # return
-
     # do
-    for status in tweepy.Cursor(api.favorites, id='_Le96_').items():
-        print('[i]', 'status.text:', status.text)
+    counter = 0
+    for status in tweepy.Cursor(api.favorites, id=USER, count=200).items():
+        counter += 1
+        print('[-]', 'try:', '#{:04d}'.format(counter), status.id)
+        print('[i]\t', status.text.replace('\n', '').strip()[:40])
 
         # check
-        if any([ht['text'] == 'TodaysMazai' for ht
+        # 100%
+        if any([hashtag['text'].lower() == 'todaysmazai' for hashtag
                 in status.entities['hashtags']]):
-            print('[-]', '#TodaysMazai found.')
+            print('[-]\t', 'Not Deleted:', '#TodaysMazai')
+            # time.sleep(1)
             continue
-        if 'media' not in status.entities or not any(
-                [m['type'] == 'photo' for m in status.entities['media']]):
-            print('[-]', 'Photo not found.')
+        if any([nsfw in status.text.lower() for nsfw in NSFW_TUPLE]):
+            print('[+]\t', 'Deleted:', 'NSFW Instruction')
+            delete_status(api, status.id)
+            # time.sleep(1)
             continue
-        if status.favorite_count < 100 or status.retweet_count < 100:
-            print('[-]', 'Tweet is not so popular.')
+        # 80%
+        if status.retweeted:
+            print('[-]\t', 'Not Deleted:', 'Retweeted')
+            # time.sleep(1)
             continue
-
-        # log
-        print('[+]', 'delete:', status.id, status.text)
-
-        # save
-        with open(LOGFILE_PATH, 'a') as log_fp:
-            log_fp.write(status.id_str + '\n')
-
-        # delete
-        api.destroy_favorite(status.id)
+        if hasattr(status, 'possibly_sensitive') and\
+                status.possibly_sensitive and status.favorite_count > 10:
+            print('[+]\t', 'Deleted:', 'Possibly Sensitive')
+            delete_status(api, status.id)
+            # time.sleep(1)
+            continue
+        if status.in_reply_to_screen_name:
+            print('[-]\t', 'Not Deleted:', 'Reply')
+            # time.sleep(1)
+            continue
+        # 50%
+        checked = False
+        if status.favorite_count < 75:
+            print('[i]\t', 'Not Deleted?:', 'Not Popular')
+            checked = True
+        if 'media' not in status.entities or not any([media['type'] == 'photo'
+                                                      for media in status.entities['media']]):
+            print('[i]\t', 'Not Deleted?:', 'Photo Not Found')
+            checked = True
+        # last resort
+        if not checked:
+            print('[+]\t', 'Deleted:', 'Default')
+            delete_status(api, status.id)
+        # time.sleep(1)
 
 
 if __name__ == '__main__':

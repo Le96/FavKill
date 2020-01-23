@@ -8,8 +8,8 @@ from datetime import datetime
 
 import tweepy
 
-from env.access_token import ACCESS_TOKEN
-from env.consumer import CONSUMER_KEY, CONSUMER_SECRET
+from env.credentials.access_token import ACCESS_TOKEN
+from env.credentials.consumer import CONSUMER_KEY, CONSUMER_SECRET
 
 
 LOGFILE_PATH = './env/logfile'
@@ -31,7 +31,7 @@ def main(start_pointer: int) -> None:
 
     # do
     liked_list = list(map(lambda item: int(item.strip()),
-                      open(LOGFILE_PATH, 'r').readlines()))
+                          open(LOGFILE_PATH, 'r').readlines()))
 
     index = start_pointer
     while index < len(liked_list):
@@ -63,7 +63,7 @@ def main(start_pointer: int) -> None:
                     print('Rate Limit Exceeded.')
                 waittime = 600 - datetime.now().timestamp() % 600
                 print('[i]\t', 'Waiting until the next x0 minutes.',
-                        '({} sec.)'.format(int(waittime)))
+                      '({} sec.)'.format(int(waittime)))
                 time.sleep(waittime)
                 continue
             else:
@@ -82,7 +82,7 @@ if __name__ == '__main__':
             while pointer < 0:
                 try:
                     pointer = int(input('[?]', 'Start With:'))
-                except:
+                except BaseException:
                     print('[!]', 'Parse Error.', 'Please Try Again.')
             main(pointer)
     except (EOFError, KeyboardInterrupt):

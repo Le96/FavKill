@@ -10,6 +10,7 @@ tweepy = "*"
 [dev-packages]
 ipython = "*"
 pylint = "*"
+tqdm = "*"
 
 [requires]
 python_version = "3.8"

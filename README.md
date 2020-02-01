@@ -17,8 +17,8 @@ Make your twitter account clean. No more Fav-Digger.
 各パラメータは任意に記入する。
 `(required)`と記されたパラメータについては必須。
 
-`Allow this application to be used to sign in with Twitter`の項目には*`Enable Sign in with Twitter`にチェックを入れる*。
-加えて`Callback URLs`には*`http://127.0.130.96:13096`を記入する*。
+`Allow this application to be used to sign in with Twitter`の項目には`Enable Sign in with Twitter`に *チェックを入れる*。
+加えて`Callback URLs`には`http://127.0.130.96:13096` *を記入する*。
 
 ## Keys and tokens
 作成したアプリケーションの認証情報を取得する。
@@ -28,7 +28,7 @@ Make your twitter account clean. No more Fav-Digger.
   - `./sample_env/credentials/consumer.py`の`CONSUMER_KEY`, `CONSUMER_SECRET`をそれぞれ置換
 - `Access token & access token secret`右側の`Generate`をクリック
 - ポップアップの`Access token`, `Access token secret`を取得
-  - この画面を抜けると再取得できず、*再生成するしかなくなるので注意*
+  - この画面を抜けると再取得できず、 *再生成するしかなくなるので注意*
   - `./sample_env/credentials/access_token.py`の`sampleuser`部分を自分(Twitter開発者アカウントとして扱っているアカウント)のscreen nameで置換
   - `KEY`, `SECRET`部分をそれぞれ置換
 

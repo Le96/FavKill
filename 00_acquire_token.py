@@ -5,19 +5,23 @@ import os
 import webbrowser
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from logging import INFO, basicConfig, getLogger
 
 import autopep8
 import tweepy
 
+from const import ENV_PATH
 from env.credentials.consumer import CONSUMER_KEY, CONSUMER_SECRET
 
 
-ENV_PATH = './env'
 ACCESS_TOKEN_FILE = ENV_PATH + '/credentials/access_token.py'
+
+logger = getLogger(__name__)
+basicConfig(level=INFO)
 
 
 def main() -> None:
-    print('[i]', 'Please Verify This Application.')
+    print('Please verify this application.')
     auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 
     webbrowser.open(auth.get_authorization_url())
@@ -54,9 +58,9 @@ class Handler(BaseHTTPRequestHandler):
         # Ask username
         user_name = ''
         while not user_name:
-            user_name = input('[?] Target Username: ')
+            user_name = input('Target username: ')
             if not user_name:
-                print('[!]', 'Parse Error.', 'Please Try Again.')
+                print('Parse error. Please try again.')
         user_name = user_name.strip()
 
         # Persistence Them
@@ -76,7 +80,7 @@ class Handler(BaseHTTPRequestHandler):
             fp.write(code)
 
         # Finish
-        print('[i]', 'Credentials Are Successfully Acquired.')
+        print('Credentials are successfully acquired.')
         return
 
 
@@ -84,4 +88,4 @@ if __name__ == '__main__':
     try:
         main()
     except (EOFError, KeyboardInterrupt):
-        print('\n[!]', 'Goodbye!')
+        logger.warn('Abort')
